@@ -1,4 +1,4 @@
-# termassis
+# termassist
 
 ```
 termassist 0.1.0
