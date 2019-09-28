@@ -25,14 +25,19 @@ fn main() {
     match matches.subcommand() {
         ("show", _) => {
             for mut plugin in plugins {
-                println!("{}", plugin.show());
+                match plugin.show() {
+                    None => {}
+                    Some(msg) => println!("{}", msg),
+                }
             }
         }
         (plugin_name, Some(matches)) => {
             for plugin in plugins.iter_mut() {
                 if plugin.name() == plugin_name {
-                    let result = plugin.command(&matches);
-                    println!("{}", result);
+                    match plugin.command(matches) {
+                        None => {}
+                        Some(msg) => println!("{}", msg),
+                    }
                 }
             }
         }

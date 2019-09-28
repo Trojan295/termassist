@@ -4,6 +4,6 @@
 compile:
 	cargo build --release
 
-install: compile
-	cp target/release/termassist /usr/local/bin
+install:
+	sudo cp target/release/termassist /usr/local/bin
 

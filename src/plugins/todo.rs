@@ -30,7 +30,7 @@ impl Plugin for TodoPlugin {
         )
     }
 
-    fn command<'a>(&mut self, matches: &ArgMatches<'a>) -> String {
+    fn command<'a>(&mut self, matches: &ArgMatches<'a>) -> Option<String> {
         match matches.subcommand() {
             ("add", Some(args)) => {
                 let message = args.value_of("message").unwrap();
@@ -49,18 +49,19 @@ impl Plugin for TodoPlugin {
         self.show()
     }
 
-    fn show(&mut self) -> String {
-        let result = self.list().map(|messages| {
-            let mut res = String::from("----- TODO ------\n");
-            for (i, msg) in messages.iter().enumerate() {
-                res.push_str(&format!("  {}. {}\n", i + 1, msg));
-            }
-            res
-        });
-        match result {
-            Ok(msg) => msg,
-            Err(err) => format!("Error in TodoPlugin show(): {}", err),
-        }
+    fn show(&mut self) -> Option<String> {
+        self.list()
+            .map(|messages| match messages.len() {
+                0 => None,
+                _ => {
+                    let mut res = String::from("----- TODO ------");
+                    for (i, msg) in messages.iter().enumerate() {
+                        res.push_str(&format!("\n  {}. {}", i + 1, msg));
+                    }
+                    Some(res)
+                }
+            })
+            .unwrap_or_else(|err| Some(format!("Error in TodoPlugin show(): {}", err)))
     }
 }
 
