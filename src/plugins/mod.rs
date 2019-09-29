@@ -1,11 +1,13 @@
-use clap::{App, ArgMatches};
-
+mod remind;
 mod todo;
+
+use clap::{App, ArgMatches};
+pub use remind::ReminderPlugin;
 pub use todo::TodoPlugin;
 
 pub trait Plugin {
-    fn show(&mut self) -> Option<String>;
     fn name(&self) -> String;
     fn register_cli<'a, 'b>(&self, app: App<'a, 'b>) -> App<'a, 'b>;
-    fn command<'a>(&mut self, matches: &ArgMatches<'a>) -> Option<String>;
+    fn show(&self) -> Option<String>;
+    fn command<'a>(&self, matches: &ArgMatches<'a>);
 }

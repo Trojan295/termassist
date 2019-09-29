@@ -1,15 +1,19 @@
+extern crate chrono;
 extern crate clap;
 extern crate linked_hash_map;
+extern crate tui;
 extern crate yaml_rust;
 
 mod plugins;
+mod ui;
 
 use clap::{App, SubCommand};
 
-use plugins::{Plugin, TodoPlugin};
+use plugins::{Plugin, ReminderPlugin, TodoPlugin};
 
 fn main() {
-    let mut plugins = vec![TodoPlugin::new()];
+    let plugins: Vec<Box<Plugin>> =
+        vec![Box::new(TodoPlugin::new()), Box::new(ReminderPlugin::new())];
 
     let mut app = App::new("termassist")
         .version("0.1.0")
@@ -24,7 +28,7 @@ fn main() {
 
     match matches.subcommand() {
         ("show", _) => {
-            for mut plugin in plugins {
+            for plugin in plugins {
                 match plugin.show() {
                     None => {}
                     Some(msg) => println!("{}", msg),
@@ -32,12 +36,9 @@ fn main() {
             }
         }
         (plugin_name, Some(matches)) => {
-            for plugin in plugins.iter_mut() {
+            for plugin in plugins.iter() {
                 if plugin.name() == plugin_name {
-                    match plugin.command(matches) {
-                        None => {}
-                        Some(msg) => println!("{}", msg),
-                    }
+                    plugin.command(matches);
                 }
             }
         }
