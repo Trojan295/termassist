@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 clap = "2.33.0"
 yaml-rust = "0.4"
-linked-hash-map = "0.5.1"
+linked-hash-map = "0.5.3"
 chrono = "0.4.9"
 tui = "0.6.2"
 termion = "1.5.3"
